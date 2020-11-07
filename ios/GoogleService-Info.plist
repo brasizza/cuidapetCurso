@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>442208404444-qrpkn9hofbrqmvcs9a48d06f0s5mku62.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.442208404444-qrpkn9hofbrqmvcs9a48d06f0s5mku62</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBKG4PE9orDMdfTta5Lgtd5sDEYQDwJ7pI</string>
+	<key>GCM_SENDER_ID</key>
+	<string>442208404444</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>br.com.cuidapet.cuidapetCurso</string>
+	<key>PROJECT_ID</key>
+	<string>cuidapet-8e9d5</string>
+	<key>STORAGE_BUCKET</key>
+	<string>cuidapet-8e9d5.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:442208404444:ios:94df133981fd36b7308519</string>
+	<key>DATABASE_URL</key>
+	<string>https://cuidapet-8e9d5.firebaseio.com</string>
+</dict>
+</plist>
