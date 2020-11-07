@@ -35,6 +35,9 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  flutter_secure_storage: ^3.3.5
+  shared_preferences: ^0.5.12+4
+  json_annotation: ^3.1.0
   flutter_dotenv: ^2.1.0
   flutter_facebook_login: ^3.0.0
 
@@ -62,6 +65,7 @@ dependencies:
 dev_dependencies:
   mockito: ^4.0.0
   modular_codegen: ^2.0.0+1
+  json_serializable: ^3.5.0
   mobx_codegen: ^1.1.2
   build_runner: ^1.10.1
   flutter_test:
