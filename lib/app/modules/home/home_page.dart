@@ -1,4 +1,5 @@
 import 'package:cuidapetcurso/app/repository/shared_prefs_repository.dart';
+import 'package:cuidapetcurso/app/shared/auth_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:get/get.dart';
@@ -36,6 +37,8 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
       ),
       body: Column(
         children: <Widget>[
+
+          Text(Modular.get<AuthStore>().usuarioLogado.email),
 
           FlatButton(onPressed: () async{
 

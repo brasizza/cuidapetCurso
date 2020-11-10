@@ -146,7 +146,7 @@ class _LoginPageState extends ModularState<LoginPage, LoginController> {
                 controller.facebookLogin();
               },
             ),
-            FlatButton(onPressed: () => Modular.link.pushNamed('/cadastro'), child: Text("Cadastre-se"))
+            FlatButton(onPressed: () => Modular.to.pushNamed('/login/cadastro'), child: Text("Cadastre-se"))
           ],
         ),
       ),

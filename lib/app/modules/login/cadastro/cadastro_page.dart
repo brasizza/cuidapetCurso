@@ -106,6 +106,11 @@ class _CadastroPageState extends ModularState<CadastroPage, CadastroController> 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Cadastrar usuário"),
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
       backgroundColor: ThemeUtils.primaryColor,
       body: Container(
           width: ScreenUtil().screenWidth,
@@ -120,7 +125,7 @@ class _CadastroPageState extends ModularState<CadastroPage, CadastroController> 
                 ),
               ),
               Container(
-                  margin: EdgeInsets.only(top: ScreenUtil().statusBarHeight + 10),
+                  margin: EdgeInsets.only(top: ScreenUtil().statusBarHeight ),
                   width: double.infinity,
                   child: Column(
                     children: [

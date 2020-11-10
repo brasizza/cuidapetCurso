@@ -10,6 +10,7 @@ class MainPage extends StatelessWidget {
       final authStore = Modular.get<AuthStore>();
       final isLogged = await authStore.isLogged();
       if (isLogged) {
+        await authStore.loadUsuario();
         Modular.to.pushNamedAndRemoveUntil('/home', (_) => false);
       } else {
         Modular.to.pushNamedAndRemoveUntil('/login', (_) => false);
