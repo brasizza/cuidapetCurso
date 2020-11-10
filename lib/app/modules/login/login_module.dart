@@ -1,3 +1,6 @@
+import 'package:cuidapetcurso/app/modules/login/cadastro/cadastro_module.dart';
+import 'package:cuidapetcurso/app/modules/login/cadastro/cadastro_page.dart';
+
 import 'login_controller.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -12,6 +15,7 @@ class LoginModule extends ChildModule {
   @override
   List<ModularRouter> get routers => [
         ModularRouter(Modular.initialRoute, child: (_, args) => LoginPage()),
+        ModularRouter('/cadastro', module: CadastroModule()),
       ];
 
   static Inject get to => Inject<LoginModule>.of();

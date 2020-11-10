@@ -1,18 +1,20 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'access_token_model.dart';
+part of 'confirm_login_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-AccessTokenModel _$AccessTokenModelFromJson(Map<String, dynamic> json) {
-  return AccessTokenModel(
+ConfirmLoginModel _$ConfirmLoginModelFromJson(Map<String, dynamic> json) {
+  return ConfirmLoginModel(
     accessToken: json['access_token'] as String,
+    refreshToken: json['refresh_token'] as String,
   );
 }
 
-Map<String, dynamic> _$AccessTokenModelToJson(AccessTokenModel instance) =>
+Map<String, dynamic> _$ConfirmLoginModelToJson(ConfirmLoginModel instance) =>
     <String, dynamic>{
       'access_token': instance.accessToken,
+      'refresh_token': instance.refreshToken,
     };

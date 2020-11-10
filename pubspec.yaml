@@ -28,7 +28,7 @@ scripts:
     mobx_build_clean: $clean & $get & $runner build --delete-conflicting-outputs
     build_runner_compile: flutter pub run build_runner build --delete-conflicting-outputs
     build_runner_watch: flutter pub run build_runner watch --delete-conflicting-outputs
-
+    build_runner_watch_raw: flutter pub run build_runner watch
 
 
 environment:

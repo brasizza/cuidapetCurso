@@ -2,9 +2,11 @@ import 'package:cuidapetcurso/app/core/dio/custom_dio.dart';
 import 'package:cuidapetcurso/app/shared/components/facebook_button.dart';
 import 'package:cuidapetcurso/app/shared/theme_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'login_controller.dart';
@@ -19,10 +21,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends ModularState<LoginPage, LoginController> {
   //use 'controller' variable to access controller
 
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: ThemeUtils.primaryColor,
       body: Container(
@@ -38,7 +38,7 @@ class _LoginPageState extends ModularState<LoginPage, LoginController> {
                 ),
               ),
               Container(
-                  margin: EdgeInsets.only(top:  ScreenUtil().statusBarHeight + 10),
+                  margin: EdgeInsets.only(top: ScreenUtil().statusBarHeight + 10),
                   width: double.infinity,
                   child: Column(
                     children: [
@@ -59,17 +59,47 @@ class _LoginPageState extends ModularState<LoginPage, LoginController> {
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Form(
+        key: controller.formKey,
         child: Column(
           children: [
             TextFormField(
+              validator: (String value) {
+                if (value.isEmpty) {
+                  return 'Login obrigatório';
+                } else {
+                  return null;
+                }
+              },
+              controller: controller.loginController,
               decoration: InputDecoration(labelText: "Login", border: OutlineInputBorder(borderRadius: BorderRadius.circular(50), gapPadding: 0), labelStyle: TextStyle(fontSize: 15)),
             ),
             SizedBox(
               height: 20,
             ),
-            TextFormField(
-              decoration: InputDecoration(labelText: "Senha", border: OutlineInputBorder(borderRadius: BorderRadius.circular(50), gapPadding: 0), labelStyle: TextStyle(fontSize: 15)),
-            ),
+            Observer(builder: (_) {
+              return TextFormField(
+                obscureText: controller.obscureText,
+                obscuringCharacter: 'x',
+                validator: (String value) {
+                  if (value.isEmpty) {
+                    return 'Senha obrigatória';
+                  } else if (value.length < 6) {
+                    return 'Senha com 6 dígitos é obrigatório';
+                  } else {
+                    return null;
+                  }
+                },
+                controller: controller.senhaController,
+                decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.lock),
+                      onPressed: () => controller.mostrarSenhaUsuario(),
+                    ),
+                    labelText: "Senha",
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(50), gapPadding: 0),
+                    labelStyle: TextStyle(fontSize: 15)),
+              );
+            }),
             Container(
               padding: EdgeInsets.all(10),
               height: 60,
@@ -82,8 +112,7 @@ class _LoginPageState extends ModularState<LoginPage, LoginController> {
                     style: TextStyle(fontSize: 20, color: Colors.white),
                   ),
                   onPressed: () async {
-                   // FacebookLogin().logIn(['public_profile', 'email']);
-                  // FirebaseAuth.instance.createUserWithEmailAndPassword(email: 'mvbdesenvolvimento@gmail.com', password: '123456');
+                    controller.login();
                   }),
             ),
             Padding(
@@ -98,14 +127,9 @@ class _LoginPageState extends ModularState<LoginPage, LoginController> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text("ou",
-                    style: TextStyle(
-
-                      fontWeight: FontWeight.bold,
-                      fontSize:20,
-                      color:ThemeUtils.primaryColor
-                    ),
-                    
+                    child: Text(
+                      "ou",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: ThemeUtils.primaryColor),
                     ),
                   ),
                   Expanded(
@@ -117,8 +141,12 @@ class _LoginPageState extends ModularState<LoginPage, LoginController> {
                 ],
               ),
             ),
-            FacebookButton(),
-            FlatButton(onPressed: (){}, child: Text("Cadastre-se"))
+            FacebookButton(
+              onTap: () {
+                controller.facebookLogin();
+              },
+            ),
+            FlatButton(onPressed: () => Modular.link.pushNamed('/cadastro'), child: Text("Cadastre-se"))
           ],
         ),
       ),

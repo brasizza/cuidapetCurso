@@ -1,3 +1,4 @@
+import 'package:cuidapetcurso/app/repository/shared_prefs_repository.dart';
 import 'package:mobx/mobx.dart';
 part 'auth_store.g.dart';
 
@@ -7,7 +8,9 @@ abstract class _AuthStoreBase with Store {
 
   @action
   Future<bool> isLogged()async {
-    return false;
+    final prefs = await SharedPrefsRepository.instance;
+    final accessToken = prefs.accessToken;
+    return accessToken != null ? true : false;
   }
   
 }

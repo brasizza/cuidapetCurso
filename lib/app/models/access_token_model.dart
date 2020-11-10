@@ -4,11 +4,11 @@ part 'access_token_model.g.dart';
 
 @JsonSerializable()
 class AccessTokenModel {
-  @JsonKey(name: 'accesss_token')
-  String accesssToken;
+  @JsonKey(name: 'access_token')
+  String accessToken;
 
   AccessTokenModel({
-    this.accesssToken,
+    this.accessToken,
   });
 
   factory AccessTokenModel.fromJson(Map<String, dynamic> json) => _$AccessTokenModelFromJson(json);

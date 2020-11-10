@@ -1,6 +1,8 @@
 import 'package:cuidapetcurso/app/modules/home/home_module.dart';
 import 'package:cuidapetcurso/app/modules/login/login_module.dart';
 import 'package:cuidapetcurso/app/modules/main_page/main_page.dart';
+import 'package:cuidapetcurso/app/repository/usuario_repository.dart';
+import 'package:cuidapetcurso/app/services/usuario_service.dart';
 import 'package:cuidapetcurso/app/shared/auth_store.dart';
 
 import 'app_controller.dart';
@@ -13,6 +15,8 @@ class AppModule extends MainModule {
   List<Bind> get binds => [
         $AppController,
         Bind((i) => AuthStore()),
+        Bind((i) => UsuarioRepository()),
+        Bind((i) => UsuarioService(i.get())),
       ];
 
   @override
