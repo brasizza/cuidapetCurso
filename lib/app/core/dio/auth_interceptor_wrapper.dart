@@ -3,6 +3,7 @@ import 'package:cuidapetcurso/app/repository/secure_storage_repository.dart';
 import 'package:cuidapetcurso/app/repository/shared_prefs_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 class AuthInterceptorWrapper extends InterceptorsWrapper {
   @override
@@ -31,16 +32,31 @@ class AuthInterceptorWrapper extends InterceptorsWrapper {
 
     print('error:  ${error.response}');
 
-    if (error.response?.statusCode == 403 || error.response?.statusCode == 401) {}
+    if (error.response?.statusCode == 403 || error.response?.statusCode == 401) {
+      await _refreshToken();
+      print("TOKEN ATUALIZADO");
 
-    Future<void> _refreshToken() async {
-      final prefs = await SharedPrefsRepository.instance;
-      final security = SecureStorageRepository();
-      final refreshToken = await security.refreshToken;
-      final accessToken = prefs.accessToken;
-
-      var response = await CustomDio.instance.put('/login/refresh', data: {'token': accessToken, 'refresh_token': refreshToken});
+      final req = error.request;
+      return CustomDio.authInstance.request(req.path, options: req);
     }
+
     //*Verificar o statusCode
+  }
+
+  Future<void> _refreshToken() async {
+    final prefs = await SharedPrefsRepository.instance;
+    final security = SecureStorageRepository();
+    final refreshToken = await security.refreshToken;
+    final accessToken = prefs.accessToken;
+    try {
+      var refreshResult = await CustomDio.instance.put('/login/refresh', data: {'token': accessToken, 'refresh_token': refreshToken});
+      await prefs.registerAccessToken(refreshResult.data['access_token']);
+      await security.registerRefreshToken(refreshResult.data['refresh_token']);
+    } on Exception catch (e) {
+      print(e);
+      await prefs.logout();
+
+      // TODO
+    }
   }
 }

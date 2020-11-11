@@ -1,3 +1,4 @@
+import 'package:cuidapetcurso/app/core/database/connection.dart';
 import 'package:cuidapetcurso/app/core/dio/custom_dio.dart';
 import 'package:cuidapetcurso/app/shared/components/facebook_button.dart';
 import 'package:cuidapetcurso/app/shared/theme_utils.dart';
@@ -21,8 +22,11 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends ModularState<LoginPage, LoginController> {
   //use 'controller' variable to access controller
 
+ 
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       backgroundColor: ThemeUtils.primaryColor,
       body: Container(

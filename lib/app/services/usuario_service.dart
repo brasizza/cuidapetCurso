@@ -43,7 +43,7 @@ class UsuarioService {
 
       final confirmModel = await _repository.confirmLogin();
       prefs.registerAccessToken(confirmModel.accessToken);
-      SecureStorageRepository().registerRefreshToken(confirmModel.accessToken);
+      await SecureStorageRepository().registerRefreshToken(confirmModel.accessToken);
       final dadosUsuario = await _repository.recuperaDadosUsuarioLogado();
       await prefs.registetrDadosUsuario(dadosUsuario);
     } on PlatformException catch (e) {

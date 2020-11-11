@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cuidapetcurso/app/models/usuario_model.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefsRepository {
@@ -20,7 +21,7 @@ class SharedPrefsRepository {
   }
 
   //REGISTER TOKEN
-  void registerAccessToken(String token) async {
+  Future<void> registerAccessToken(String token) async {
     await prefs.setString(_ACCESS_TOKEN, token);
   }
 
@@ -34,10 +35,17 @@ class SharedPrefsRepository {
   String get deviceId => prefs.get(_DEVICE_ID);
 
   //REGISTER DADOS USUARIO
-  void registetrDadosUsuario(UsuarioModel usuario) async {
+  Future<void> registetrDadosUsuario(UsuarioModel usuario) async {
     await prefs.setString(_DADOS_USUARIO, jsonEncode(usuario.toJson()));
   }
   UsuarioModel get dadosUsuario {
     return UsuarioModel.fromJson(jsonDecode(prefs.getString(_DADOS_USUARIO)));
+  }
+
+
+  Future<void> logout() async{
+    await prefs.clear();
+    await Modular.to.pushNamedAndRemoveUntil('/', (_) => false);
+
   }
 }

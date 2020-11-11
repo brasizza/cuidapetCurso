@@ -4,9 +4,9 @@ class SecureStorageRepository {
   static const  REFRESH_TOKEN = '/REFRESH_TOKEN/';
   
 
-  void registerRefreshToken(String token){
+  Future<void> registerRefreshToken(String token) async {
     final store = FlutterSecureStorage();
-    store.write(key: REFRESH_TOKEN, value: token);
+   await  store.write(key: REFRESH_TOKEN, value: token);
   }
 
   Future<String> get refreshToken async{

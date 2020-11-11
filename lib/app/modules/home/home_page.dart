@@ -17,38 +17,33 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends ModularState<HomePage, HomeController> {
   //use 'controller' variable to access controller
 
-    
-
   @override
   void initState() {
     super.initState();
-
-    SharedPrefsRepository.instance.then((pref) {
-
-    });
+    controller.initPage();
   }
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: [
+          IconButton(
+            onPressed: () => Modular.to.pushNamed('/home/enderecos'),
+            icon: Icon(Icons.location_on),
+          )
+        ],
       ),
       body: Column(
         children: <Widget>[
-
           Text(Modular.get<AuthStore>().usuarioLogado.email),
-
-          FlatButton(onPressed: () async{
-
-             ( await SharedPreferences.getInstance()).clear();
-            Modular.to.pushNamedAndRemoveUntil('/', (_) => false);
-
-
-          //  Get.snackbar('oi', 'ooooi');
-         
-          }, child: Text("Logout"))
+          FlatButton(
+              onPressed: () async {
+                var prefs = await SharedPrefsRepository.instance;
+                await prefs.logout();
+              },
+              child: Text("Logout"))
         ],
       ),
     );

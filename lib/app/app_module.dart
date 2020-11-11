@@ -1,7 +1,11 @@
+import 'package:cuidapetcurso/app/core/database/connection.dart';
+import 'package:cuidapetcurso/app/core/database/connection_adm.dart';
 import 'package:cuidapetcurso/app/modules/home/home_module.dart';
 import 'package:cuidapetcurso/app/modules/login/login_module.dart';
 import 'package:cuidapetcurso/app/modules/main_page/main_page.dart';
+import 'package:cuidapetcurso/app/repository/enderecos_repository.dart';
 import 'package:cuidapetcurso/app/repository/usuario_repository.dart';
+import 'package:cuidapetcurso/app/services/enderecos_service.dart';
 import 'package:cuidapetcurso/app/services/usuario_service.dart';
 import 'package:cuidapetcurso/app/shared/auth_store.dart';
 
@@ -14,9 +18,13 @@ class AppModule extends MainModule {
   @override
   List<Bind> get binds => [
         $AppController,
-        Bind((i) => AuthStore()),
+        Bind((i) => ConnectionADM(), lazy: false),
         Bind((i) => UsuarioRepository()),
         Bind((i) => UsuarioService(i.get())),
+        Bind((i) => EnderecoRepository()),
+        Bind((i) => EnderecoService(i.get())),
+        Bind((i) => AuthStore()),
+
       ];
 
   @override
