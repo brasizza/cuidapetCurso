@@ -215,8 +215,75 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
                 width: ScreenUtil().screenWidth,
                 margin: EdgeInsets.only(left: 30),
                 height: 80,
-                color: Colors.red,
-              )
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(left: 50),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Petshop x "),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            children: [
+                              Icon(Icons.location_on, size: 16, color: Colors.grey[500]),
+                              Text("20km de distância"),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                    Spacer(),
+                    Container(
+                      margin: EdgeInsets.all(10),
+                      child: CircleAvatar(
+                          maxRadius: 15,
+                          backgroundColor: ThemeUtils.primaryColor,
+                          child: Icon(
+                            Icons.arrow_forward_ios,
+                            size: 15,
+                            color: Colors.white,
+                          )),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 5),
+                child: Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(100),
+                      border: Border.all(
+                        color: Colors.grey[100],
+                        width: 5,
+                      ),
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          'https://petshopcontrol.blob.core.windows.net/blog/blog/wp-content/uploads/fachada-pet.png',
+                        ),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+                width: 70,
+                height: 70,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.transparent, width: 1),
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(100),
+                ),
+              ),
             ],
           ),
         );
@@ -226,6 +293,14 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
   }
 
   Widget _buildEstabelecimentosGrid() {
-    return Container();
+    return GridView.builder(
+        itemCount: 4,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 1.1,
+        ),
+        itemBuilder: (context, index) {
+          return Text("A");
+        });
   }
 }
