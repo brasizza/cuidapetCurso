@@ -1,3 +1,4 @@
+import 'package:cuidapetcurso/app/repository/enderecos_repository.dart';
 import 'package:cuidapetcurso/app/repository/shared_prefs_repository.dart';
 import 'package:cuidapetcurso/app/shared/auth_store.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
           FlatButton(
               onPressed: () async {
                 var prefs = await SharedPrefsRepository.instance;
+                await EnderecoRepository().limparEnderecosCadastrados();
                 await prefs.logout();
               },
               child: Text("Logout"))

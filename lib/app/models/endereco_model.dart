@@ -40,3 +40,4 @@ class EnderecoModel {
 
   factory EnderecoModel.fromJson(String source) => EnderecoModel.fromMap(json.decode(source));
 }
+

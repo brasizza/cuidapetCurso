@@ -45,7 +45,7 @@ class UsuarioService {
       prefs.registerAccessToken(confirmModel.accessToken);
       await SecureStorageRepository().registerRefreshToken(confirmModel.accessToken);
       final dadosUsuario = await _repository.recuperaDadosUsuarioLogado();
-      await prefs.registetrDadosUsuario(dadosUsuario);
+      await prefs.registerDadosUsuario(dadosUsuario);
     } on PlatformException catch (e) {
       print("Erro ao fazer o login no firebase $e");
       rethrow;

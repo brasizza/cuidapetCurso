@@ -20,6 +20,10 @@ class EnderecoRepository {
     conn.rawDelete("Delete from endereco");
   }
 
+Future<PlacesDetailsResponse> recuperarDetalheEnderecoGooglePlaces(String placeId) async{
+    final places = GoogleMapsPlaces(apiKey: DotEnv().env['googleApiKey']);
+    return await places.getDetailsByPlaceId(placeId);
+}
 
   Future<List<Prediction>> buscarEnderecoGooglePlaces(String endereco) async {
     final places = GoogleMapsPlaces(apiKey: DotEnv().env['googleApiKey']);

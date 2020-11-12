@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "442208404444",
+    "firebase_url": "https://cuidapet-8e9d5.firebaseio.com",
+    "project_id": "cuidapet-8e9d5",
+    "storage_bucket": "cuidapet-8e9d5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:442208404444:android:109617d5cc621c61308519",
+        "android_client_info": {
+          "package_name": "br.com.cuidapet.cuidapetcurso"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "442208404444-hqjrcamsljrudalfmv7rkvvgh9i901e3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfAflpSfjniyMmR8itD1VUanXdv-fKpDE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "442208404444-hqjrcamsljrudalfmv7rkvvgh9i901e3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "442208404444-qrpkn9hofbrqmvcs9a48d06f0s5mku62.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "br.com.cuidapet.cuidapetCurso"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

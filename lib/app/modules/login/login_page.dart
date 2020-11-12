@@ -29,33 +29,35 @@ class _LoginPageState extends ModularState<LoginPage, LoginController> {
 
     return Scaffold(
       backgroundColor: ThemeUtils.primaryColor,
-      body: Container(
-          width: ScreenUtil().screenWidth,
-          height: ScreenUtil().screenHeight,
-          child: Stack(
-            children: [
-              Container(
-                width: ScreenUtil().screenWidth,
-                height: ScreenUtil().screenHeight < 700 ? 800 : ScreenUtil().screenHeight * .95,
-                decoration: BoxDecoration(
-                  image: new DecorationImage(image: AssetImage('lib/assets/images/login_background.png'), fit: BoxFit.fill),
+      body: SingleChildScrollView(
+              child: Container(
+            width: ScreenUtil().screenWidth,
+            height: ScreenUtil().screenHeight,
+            child: Stack(
+              children: [
+                Container(
+                  width: ScreenUtil().screenWidth,
+                  height: ScreenUtil().screenHeight < 700 ? 800 : ScreenUtil().screenHeight * .95,
+                  decoration: BoxDecoration(
+                    image: new DecorationImage(image: AssetImage('lib/assets/images/login_background.png'), fit: BoxFit.fill),
+                  ),
                 ),
-              ),
-              Container(
-                  margin: EdgeInsets.only(top: ScreenUtil().statusBarHeight + 10),
-                  width: double.infinity,
-                  child: Column(
-                    children: [
-                      Image.asset(
-                        'lib/assets/images/logo.png',
-                        width: ScreenUtil().setWidth(400),
-                        fit: BoxFit.fill,
-                      ),
-                      _buildForm()
-                    ],
-                  ))
-            ],
-          )),
+                Container(
+                    margin: EdgeInsets.only(top: ScreenUtil().statusBarHeight + 10),
+                    width: double.infinity,
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          'lib/assets/images/logo.png',
+                          width: ScreenUtil().setWidth(400),
+                          fit: BoxFit.fill,
+                        ),
+                        _buildForm()
+                      ],
+                    ))
+              ],
+            )),
+      ),
     );
   }
 
