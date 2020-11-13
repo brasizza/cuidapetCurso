@@ -1,8 +1,11 @@
+import 'package:cuidapetcurso/app/models/categoria_model.dart';
+import 'package:cuidapetcurso/app/modules/home/components/home_appbar.dart';
 import 'package:cuidapetcurso/app/repository/enderecos_repository.dart';
 import 'package:cuidapetcurso/app/repository/shared_prefs_repository.dart';
 import 'package:cuidapetcurso/app/shared/auth_store.dart';
 import 'package:cuidapetcurso/app/shared/theme_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -26,90 +29,28 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
     controller.initPage();
   }
 
+  var appBar; // HomeAppBar(controller);
+  Map<String,IconData> categoriasIcons = {
+
+    'P': Icons.pets,
+    'V' : Icons.local_hospital,
+    'C': Icons.store_mall_directory
+  };
+  _HomePageState() {
+    appBar = HomeAppBar(controller);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(),
       backgroundColor: Colors.grey[100],
-      appBar: PreferredSize(
-        preferredSize: Size(
-          double.infinity,
-          100,
-        ),
-        child: AppBar(
-          backgroundColor: Colors.grey[100],
-          title: Padding(
-            padding: const EdgeInsets.only(bottom: 15.0),
-            child: Text(
-              'Cuida Pet',
-              style: TextStyle(
-                color: Colors.white,
-              ),
-            ),
-          ),
-          actions: [
-            IconButton(
-              onPressed: () => Modular.to.pushNamed('/home/enderecos'),
-              icon: Icon(Icons.location_on),
-            )
-          ],
-          elevation: 0,
-          flexibleSpace: Stack(
-            children: [
-              Container(
-                height: 90,
-                width: double.infinity,
-                color: ThemeUtils.primaryColor,
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  width: ScreenUtil().screenWidth * .9,
-                  child: Material(
-                    elevation: 4,
-                    borderRadius: BorderRadius.circular(30),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        suffixIcon: Padding(
-                          padding: const EdgeInsets.only(right: 20.0),
-                          child: Icon(
-                            Icons.search,
-                            size: 30,
-                          ),
-                        ),
-                        fillColor: Colors.white,
-                        filled: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide(
-                            color: Colors.grey[200],
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide(
-                            color: Colors.grey[200],
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide(
-                            color: Colors.grey[200],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.only(top: 12.0),
           width: ScreenUtil().screenWidth,
-          height: ScreenUtil().screenHeight,
+          height: ScreenUtil().screenHeight - (appBar.preferredSize.height + ScreenUtil().statusBarHeight),
           child: Column(
             children: <Widget>[
               _buildEndereco(),
@@ -127,85 +68,126 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
       child: Column(
         children: [
           Text("Estabelecimentos próximos de "),
-          Text(
-            "Av Paulista 100",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
+          Observer(builder: (_) {
+            return Text(
+              controller.enderecoSelecionado?.endereco ?? '',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            );
+          }),
         ],
       ),
     );
   }
 
   Widget _buildCategorias() {
-    return Container(
-      height: 130,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: 10,
-        shrinkWrap: true,
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-            margin: EdgeInsets.all(20),
-            child: Column(
-              children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundColor: ThemeUtils.primaryColorLight,
-                  child: Icon(
-                    Icons.pets,
-                    size: 30,
-                    color: Colors.black,
-                  ),
+    return FutureBuilder<List<CategoriaModel>>(
+        future: controller.categoriasFuture,
+        builder: (context, snapshot) {
+          print(snapshot.connectionState.toString());
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+              break;
+            case ConnectionState.waiting:
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+              break;
+            case ConnectionState.active:
+              return Container();
+              break;
+            case ConnectionState.done:
+              if (!snapshot.hasData) {
+                return Container();
+              }
+
+              if (snapshot.hasError) {
+                return Container(child: Text("Erro ao buscar a categoria"));
+              }
+
+              var cats = snapshot.data;
+              return Container(
+                height: 130,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: cats.length,
+                  shrinkWrap: true,
+                  itemBuilder: (BuildContext context, int index) {
+                    var cat  = cats[index];
+                    return Container(
+                      margin: EdgeInsets.all(20),
+                      child: Column(
+                        children: [
+                          CircleAvatar(
+                            radius: 30,
+                            backgroundColor: ThemeUtils.primaryColorLight,
+                            child: Icon(
+                              categoriasIcons[cat.tipo],
+                              size: 30,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(cat.nome)
+                        ],
+                      ),
+                    );
+                  },
                 ),
-                SizedBox(
-                  height: 10,
-                ),
-                Text("X")
-              ],
-            ),
-          );
-        },
-      ),
-    );
+              );
+              break;
+
+            default:
+              return Container();
+              break;
+          }
+        });
   }
 
   Widget _buildEstabelecimentos() {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Row(
-            children: [
-              Text("Estabelecimentos"),
-              Spacer(),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(Icons.view_headline),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(Icons.view_comfy),
-              ),
-            ],
+    return Container(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Row(
+              children: [
+                Text("Estabelecimentos"),
+                Spacer(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(Icons.view_headline),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(Icons.view_comfy),
+                ),
+              ],
+            ),
           ),
-        ),
-        Expanded(
-            child: PageView(
-          children: [
-            _buildEstabelecimentosLista(),
-            _buildEstabelecimentosGrid(),
-          ],
-        )),
-      ],
+          Expanded(
+              child: PageView(
+            children: [
+              _buildEstabelecimentosLista(),
+              _buildEstabelecimentosGrid(),
+            ],
+          )),
+        ],
+      ),
     );
   }
 
   Widget _buildEstabelecimentosLista() {
     return ListView.separated(
-      itemCount: 5,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: 20,
       itemBuilder: (context, index) {
         return Container(
           margin: EdgeInsets.symmetric(horizontal: 10),
@@ -294,13 +276,69 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
 
   Widget _buildEstabelecimentosGrid() {
     return GridView.builder(
+        physics: NeverScrollableScrollPhysics(),
         itemCount: 4,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           childAspectRatio: 1.1,
         ),
         itemBuilder: (context, index) {
-          return Text("A");
+          return Stack(
+            children: [
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                margin: EdgeInsets.only(
+                  top: 40,
+                  left: 10,
+                  right: 10,
+                ),
+                elevation: 5,
+                child: Container(
+                  width: double.infinity,
+                  height: 120,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 40, bottom: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text("PET X", style: ThemeUtils.theme.textTheme.subtitle2),
+                          Text("20km de distancia"),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: CircleAvatar(
+                  radius: 40,
+                  backgroundColor: Colors.grey[200],
+                ),
+              ),
+              Positioned(
+                top: 4,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: CircleAvatar(
+                    radius: 35,
+                    backgroundColor: Colors.white,
+                    backgroundImage: NetworkImage(
+                      'https://petshopcontrol.blob.core.windows.net/blog/blog/wp-content/uploads/fachada-pet.png',
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
         });
   }
 }

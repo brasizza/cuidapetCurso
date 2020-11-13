@@ -51,12 +51,10 @@ class SharedPrefsRepository {
 
   EnderecoModel get enderecoSelecionado {
     var enderecoJson = prefs.getString(_ENDERECO_SELECIONADO);
-    if(enderecoJson != null){
-    return EnderecoModel.fromJson(enderecoJson);
-
+    if (enderecoJson != null) {
+      return EnderecoModel.fromJson(enderecoJson);
     }
-      return null;
-
+    return null;
   }
 
   Future<void> logout() async {
