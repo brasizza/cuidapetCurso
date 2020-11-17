@@ -29,6 +29,7 @@ class HomeAppBar extends PreferredSize {
                   onPressed: () async {
                     await Modular.to.pushNamed('/home/enderecos');
                     await controller.recuperarEnderecoSelecionado();
+                    await  controller.buscarEstabelecimentos();
                   },
                   icon: Icon(Icons.location_on),
                 )
@@ -49,6 +50,7 @@ class HomeAppBar extends PreferredSize {
                         elevation: 4,
                         borderRadius: BorderRadius.circular(30),
                         child: TextFormField(
+                          onChanged: (nome)=> controller.filtrarEstabelecimentoPorNome(nome),
                           decoration: InputDecoration(
                             suffixIcon: Padding(
                               padding: const EdgeInsets.only(right: 20.0),

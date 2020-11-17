@@ -1,4 +1,6 @@
 import 'package:cuidapetcurso/app/models/categoria_model.dart';
+import 'package:cuidapetcurso/app/modules/home/components/estabelecimento_item_grid.dart';
+import 'package:cuidapetcurso/app/modules/home/components/estabelecimento_item_list.dart';
 import 'package:cuidapetcurso/app/modules/home/components/home_appbar.dart';
 import 'package:cuidapetcurso/app/repository/enderecos_repository.dart';
 import 'package:cuidapetcurso/app/repository/shared_prefs_repository.dart';
@@ -29,13 +31,9 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
     controller.initPage();
   }
 
-  var appBar; // HomeAppBar(controller);
-  Map<String,IconData> categoriasIcons = {
-
-    'P': Icons.pets,
-    'V' : Icons.local_hospital,
-    'C': Icons.store_mall_directory
-  };
+  HomeAppBar appBar; // HomeAppBar(controller);
+  final categoriasIcons = {'P': Icons.pets, 'V': Icons.local_hospital, 'C': Icons.store_mall_directory};
+  final _estabelecimentoPageController = PageController(initialPage: 0);
   _HomePageState() {
     appBar = HomeAppBar(controller);
   }
@@ -83,72 +81,78 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
   }
 
   Widget _buildCategorias() {
-    return FutureBuilder<List<CategoriaModel>>(
-        future: controller.categoriasFuture,
-        builder: (context, snapshot) {
-          print(snapshot.connectionState.toString());
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-              break;
-            case ConnectionState.waiting:
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-              break;
-            case ConnectionState.active:
-              return Container();
-              break;
-            case ConnectionState.done:
-              if (!snapshot.hasData) {
+    return Observer(builder: (_) {
+      return FutureBuilder<List<CategoriaModel>>(
+          future: controller.categoriasFuture,
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+                break;
+              case ConnectionState.waiting:
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+                break;
+              case ConnectionState.active:
                 return Container();
-              }
+                break;
+              case ConnectionState.done:
+                if (!snapshot.hasData) {
+                  return Container();
+                }
 
-              if (snapshot.hasError) {
-                return Container(child: Text("Erro ao buscar a categoria"));
-              }
+                if (snapshot.hasError) {
+                  return Container(child: Text("Erro ao buscar a categoria"));
+                }
 
-              var cats = snapshot.data;
-              return Container(
-                height: 130,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: cats.length,
-                  shrinkWrap: true,
-                  itemBuilder: (BuildContext context, int index) {
-                    var cat  = cats[index];
-                    return Container(
-                      margin: EdgeInsets.all(20),
-                      child: Column(
-                        children: [
-                          CircleAvatar(
-                            radius: 30,
-                            backgroundColor: ThemeUtils.primaryColorLight,
-                            child: Icon(
-                              categoriasIcons[cat.tipo],
-                              size: 30,
-                              color: Colors.black,
+                var cats = snapshot.data;
+                return Container(
+                  height: 130,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: cats.length,
+                    shrinkWrap: true,
+                    itemBuilder: (BuildContext context, int index) {
+                      var cat = cats[index];
+                      return Observer(builder: (_) {
+                        return InkWell(
+                          onTap: () => controller.filtrarPorCategoria(cat.id),
+                          child: Container(
+                            margin: EdgeInsets.all(20),
+                            child: Column(
+                              children: [
+                                CircleAvatar(
+                                  radius: 30,
+                                  backgroundColor: controller.categoriaSelecionada == cat.id ? ThemeUtils.primaryColor : ThemeUtils.primaryColorLight,
+                                  child: Icon(
+                                    categoriasIcons[cat.tipo],
+                                    size: 30,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(cat.nome)
+                              ],
                             ),
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(cat.nome)
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              );
-              break;
+                        );
+                      });
+                    },
+                  ),
+                );
+                break;
 
-            default:
-              return Container();
-              break;
-          }
-        });
+              default:
+                return Container();
+                break;
+            }
+          });
+    });
   }
 
   Widget _buildEstabelecimentos() {
@@ -157,23 +161,46 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
         children: [
           Padding(
             padding: const EdgeInsets.all(15.0),
-            child: Row(
-              children: [
-                Text("Estabelecimentos"),
-                Spacer(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(Icons.view_headline),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(Icons.view_comfy),
-                ),
-              ],
-            ),
+            child: Observer(builder: (_) {
+              return Row(
+                children: [
+                  Text("Estabelecimentos"),
+                  Spacer(),
+                  InkWell(
+                    onTap: () {
+                      _estabelecimentoPageController.previousPage(duration: Duration(microseconds: 200), curve: Curves.ease);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(
+                        Icons.view_headline,
+                        color: controller.paginaSelecionada == 0 ? Colors.black : Colors.grey,
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      _estabelecimentoPageController.nextPage(duration: Duration(microseconds: 200), curve: Curves.ease);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(
+                        Icons.view_comfy,
+                        color: controller.paginaSelecionada == 1 ? Colors.black : Colors.grey,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }),
           ),
           Expanded(
               child: PageView(
+            onPageChanged: (int pagina) {
+              controller.alterarPaginaSelecionada(pagina);
+            },
+            controller: _estabelecimentoPageController,
+            physics: NeverScrollableScrollPhysics(),
             children: [
               _buildEstabelecimentosLista(),
               _buildEstabelecimentosGrid(),
@@ -185,160 +212,91 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
   }
 
   Widget _buildEstabelecimentosLista() {
-    return ListView.separated(
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: 20,
-      itemBuilder: (context, index) {
-        return Container(
-          margin: EdgeInsets.symmetric(horizontal: 10),
-          child: Stack(
-            children: [
-              Container(
-                width: ScreenUtil().screenWidth,
-                margin: EdgeInsets.only(left: 30),
-                height: 80,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 50),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("Petshop x "),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            children: [
-                              Icon(Icons.location_on, size: 16, color: Colors.grey[500]),
-                              Text("20km de distância"),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    Spacer(),
-                    Container(
-                      margin: EdgeInsets.all(10),
-                      child: CircleAvatar(
-                          maxRadius: 15,
-                          backgroundColor: ThemeUtils.primaryColor,
-                          child: Icon(
-                            Icons.arrow_forward_ios,
-                            size: 15,
-                            color: Colors.white,
-                          )),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 5),
-                child: Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(100),
-                      border: Border.all(
-                        color: Colors.grey[100],
-                        width: 5,
-                      ),
-                      image: DecorationImage(
-                        image: NetworkImage(
-                          'https://petshopcontrol.blob.core.windows.net/blog/blog/wp-content/uploads/fachada-pet.png',
-                        ),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ),
-                width: 70,
-                height: 70,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.transparent, width: 1),
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(100),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-      separatorBuilder: (_, index) => Divider(color: Colors.transparent),
-    );
+    return Observer(builder: (_) {
+      return FutureBuilder(
+          future: controller.estabelecimentosFuture,
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+                break;
+              case ConnectionState.waiting:
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+                break;
+              case ConnectionState.active:
+                return Container();
+                break;
+              case ConnectionState.done:
+                if (snapshot.hasError) {
+                  return Container(child: Text("Erro ao buscar a categoria"));
+                }
+
+                if (snapshot.hasData) {
+                  var fornecs = snapshot.data;
+                  return ListView.separated(
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: fornecs.length,
+                    itemBuilder: (context, index) {
+                      var fornec = fornecs[index];
+                      return EstabelecimentoItemLista(fornec);
+                    },
+                    separatorBuilder: (_, index) => Divider(color: Colors.transparent),
+                  );
+                }
+
+                break;
+              default:
+                return Container();
+            }
+          });
+    });
   }
 
   Widget _buildEstabelecimentosGrid() {
-    return GridView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: 4,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 1.1,
-        ),
-        itemBuilder: (context, index) {
-          return Stack(
-            children: [
-              Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                margin: EdgeInsets.only(
-                  top: 40,
-                  left: 10,
-                  right: 10,
-                ),
-                elevation: 5,
-                child: Container(
-                  width: double.infinity,
-                  height: 120,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 40, bottom: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Text("PET X", style: ThemeUtils.theme.textTheme.subtitle2),
-                          Text("20km de distancia"),
-                        ],
+    return Observer(builder: (_) {
+      return FutureBuilder(
+          future: controller.estabelecimentosFuture,
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+                break;
+              case ConnectionState.waiting:
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+                break;
+              case ConnectionState.active:
+                return Container();
+                break;
+              case ConnectionState.done:
+                if (snapshot.hasError) {
+                  return Container(child: Text("Erro ao buscar a categoria"));
+                }
+                if (snapshot.hasData) {
+                  var fornecs = snapshot.data;
+                  return GridView.builder(
+                      itemCount: fornecs.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 1.1,
                       ),
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: CircleAvatar(
-                  radius: 40,
-                  backgroundColor: Colors.grey[200],
-                ),
-              ),
-              Positioned(
-                top: 4,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: CircleAvatar(
-                    radius: 35,
-                    backgroundColor: Colors.white,
-                    backgroundImage: NetworkImage(
-                      'https://petshopcontrol.blob.core.windows.net/blog/blog/wp-content/uploads/fachada-pet.png',
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          );
-        });
+                      itemBuilder: (context, index) {
+                        var fornec = fornecs[index];
+                        return EstabelecimentoItemGrid(fornec);
+                      });
+                }
+                break;
+              default:
+                return Container();
+            }
+          });
+    });
   }
 }

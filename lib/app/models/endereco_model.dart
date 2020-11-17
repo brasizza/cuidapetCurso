@@ -31,7 +31,7 @@ class EnderecoModel {
       id: map['id'],
       endereco: map['endereco'] as String,
       latitude: map['latitude'].runtimeType == String ? double.parse(map['latitude']) : map['latitude'] as double,
-      longitude: map['longitude'].runtimeType == String ? double.parse(map['longitude']) : map['latitude'] as double,
+      longitude: map['longitude'].runtimeType == String ? double.parse(map['longitude']) : map['longitude'] as double,
       complemento: map['complemento'] as String,
     );
   }

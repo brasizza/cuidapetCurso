@@ -7,7 +7,8 @@ part of 'home_controller.dart';
 // **************************************************************************
 
 final $HomeController = BindInject(
-  (i) => HomeController(i<EnderecoService>(), i<CategoriaService>()),
+  (i) => HomeController(
+      i<EnderecoService>(), i<CategoriaService>(), i<FornecedorService>()),
   singleton: true,
   lazy: true,
 );
@@ -35,6 +36,38 @@ mixin _$HomeController on _HomeControllerBase, Store {
     });
   }
 
+  final _$categoriaSelecionadaAtom =
+      Atom(name: '_HomeControllerBase.categoriaSelecionada');
+
+  @override
+  int get categoriaSelecionada {
+    _$categoriaSelecionadaAtom.reportRead();
+    return super.categoriaSelecionada;
+  }
+
+  @override
+  set categoriaSelecionada(int value) {
+    _$categoriaSelecionadaAtom.reportWrite(value, super.categoriaSelecionada,
+        () {
+      super.categoriaSelecionada = value;
+    });
+  }
+
+  final _$nomeFiltroAtom = Atom(name: '_HomeControllerBase.nomeFiltro');
+
+  @override
+  String get nomeFiltro {
+    _$nomeFiltroAtom.reportRead();
+    return super.nomeFiltro;
+  }
+
+  @override
+  set nomeFiltro(String value) {
+    _$nomeFiltroAtom.reportWrite(value, super.nomeFiltro, () {
+      super.nomeFiltro = value;
+    });
+  }
+
   final _$categoriasFutureAtom =
       Atom(name: '_HomeControllerBase.categoriasFuture');
 
@@ -51,19 +84,62 @@ mixin _$HomeController on _HomeControllerBase, Store {
     });
   }
 
+  final _$estabelecimentosFutureAtom =
+      Atom(name: '_HomeControllerBase.estabelecimentosFuture');
+
+  @override
+  ObservableFuture<List<FornecedorBuscaModel>> get estabelecimentosFuture {
+    _$estabelecimentosFutureAtom.reportRead();
+    return super.estabelecimentosFuture;
+  }
+
+  @override
+  set estabelecimentosFuture(
+      ObservableFuture<List<FornecedorBuscaModel>> value) {
+    _$estabelecimentosFutureAtom
+        .reportWrite(value, super.estabelecimentosFuture, () {
+      super.estabelecimentosFuture = value;
+    });
+  }
+
+  final _$estabelecimentosOriginaisAtom =
+      Atom(name: '_HomeControllerBase.estabelecimentosOriginais');
+
+  @override
+  List<FornecedorBuscaModel> get estabelecimentosOriginais {
+    _$estabelecimentosOriginaisAtom.reportRead();
+    return super.estabelecimentosOriginais;
+  }
+
+  @override
+  set estabelecimentosOriginais(List<FornecedorBuscaModel> value) {
+    _$estabelecimentosOriginaisAtom
+        .reportWrite(value, super.estabelecimentosOriginais, () {
+      super.estabelecimentosOriginais = value;
+    });
+  }
+
+  final _$paginaSelecionadaAtom =
+      Atom(name: '_HomeControllerBase.paginaSelecionada');
+
+  @override
+  int get paginaSelecionada {
+    _$paginaSelecionadaAtom.reportRead();
+    return super.paginaSelecionada;
+  }
+
+  @override
+  set paginaSelecionada(int value) {
+    _$paginaSelecionadaAtom.reportWrite(value, super.paginaSelecionada, () {
+      super.paginaSelecionada = value;
+    });
+  }
+
   final _$initPageAsyncAction = AsyncAction('_HomeControllerBase.initPage');
 
   @override
   Future<void> initPage() {
     return _$initPageAsyncAction.run(() => super.initPage());
-  }
-
-  final _$buscarCategoriasAsyncAction =
-      AsyncAction('_HomeControllerBase.buscarCategorias');
-
-  @override
-  Future<void> buscarCategorias() {
-    return _$buscarCategoriasAsyncAction.run(() => super.buscarCategorias());
   }
 
   final _$temEnderecoCadastradoAsyncAction =
@@ -84,11 +160,83 @@ mixin _$HomeController on _HomeControllerBase, Store {
         .run(() => super.recuperarEnderecoSelecionado());
   }
 
+  final _$buscarEstabelecimentosAsyncAction =
+      AsyncAction('_HomeControllerBase.buscarEstabelecimentos');
+
+  @override
+  Future<void> buscarEstabelecimentos() {
+    return _$buscarEstabelecimentosAsyncAction
+        .run(() => super.buscarEstabelecimentos());
+  }
+
+  final _$_HomeControllerBaseActionController =
+      ActionController(name: '_HomeControllerBase');
+
+  @override
+  void alterarPaginaSelecionada(int pagina) {
+    final _$actionInfo = _$_HomeControllerBaseActionController.startAction(
+        name: '_HomeControllerBase.alterarPaginaSelecionada');
+    try {
+      return super.alterarPaginaSelecionada(pagina);
+    } finally {
+      _$_HomeControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void buscarCategorias() {
+    final _$actionInfo = _$_HomeControllerBaseActionController.startAction(
+        name: '_HomeControllerBase.buscarCategorias');
+    try {
+      return super.buscarCategorias();
+    } finally {
+      _$_HomeControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void filtrarPorCategoria(int id) {
+    final _$actionInfo = _$_HomeControllerBaseActionController.startAction(
+        name: '_HomeControllerBase.filtrarPorCategoria');
+    try {
+      return super.filtrarPorCategoria(id);
+    } finally {
+      _$_HomeControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void filtrarEstabelecimentoPorNome(String nome) {
+    final _$actionInfo = _$_HomeControllerBaseActionController.startAction(
+        name: '_HomeControllerBase.filtrarEstabelecimentoPorNome');
+    try {
+      return super.filtrarEstabelecimentoPorNome(nome);
+    } finally {
+      _$_HomeControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void _filtrarEstabelecimento() {
+    final _$actionInfo = _$_HomeControllerBaseActionController.startAction(
+        name: '_HomeControllerBase._filtrarEstabelecimento');
+    try {
+      return super._filtrarEstabelecimento();
+    } finally {
+      _$_HomeControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
 enderecoSelecionado: ${enderecoSelecionado},
-categoriasFuture: ${categoriasFuture}
+categoriaSelecionada: ${categoriaSelecionada},
+nomeFiltro: ${nomeFiltro},
+categoriasFuture: ${categoriasFuture},
+estabelecimentosFuture: ${estabelecimentosFuture},
+estabelecimentosOriginais: ${estabelecimentosOriginais},
+paginaSelecionada: ${paginaSelecionada}
     ''';
   }
 }
