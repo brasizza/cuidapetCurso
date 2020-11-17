@@ -53,21 +53,6 @@ mixin _$HomeController on _HomeControllerBase, Store {
     });
   }
 
-  final _$nomeFiltroAtom = Atom(name: '_HomeControllerBase.nomeFiltro');
-
-  @override
-  String get nomeFiltro {
-    _$nomeFiltroAtom.reportRead();
-    return super.nomeFiltro;
-  }
-
-  @override
-  set nomeFiltro(String value) {
-    _$nomeFiltroAtom.reportWrite(value, super.nomeFiltro, () {
-      super.nomeFiltro = value;
-    });
-  }
-
   final _$categoriasFutureAtom =
       Atom(name: '_HomeControllerBase.categoriasFuture');
 
@@ -206,11 +191,11 @@ mixin _$HomeController on _HomeControllerBase, Store {
   }
 
   @override
-  void filtrarEstabelecimentoPorNome(String nome) {
+  void filtrarEstabelecimentoPorNome() {
     final _$actionInfo = _$_HomeControllerBaseActionController.startAction(
         name: '_HomeControllerBase.filtrarEstabelecimentoPorNome');
     try {
-      return super.filtrarEstabelecimentoPorNome(nome);
+      return super.filtrarEstabelecimentoPorNome();
     } finally {
       _$_HomeControllerBaseActionController.endAction(_$actionInfo);
     }
@@ -232,7 +217,6 @@ mixin _$HomeController on _HomeControllerBase, Store {
     return '''
 enderecoSelecionado: ${enderecoSelecionado},
 categoriaSelecionada: ${categoriaSelecionada},
-nomeFiltro: ${nomeFiltro},
 categoriasFuture: ${categoriasFuture},
 estabelecimentosFuture: ${estabelecimentosFuture},
 estabelecimentosOriginais: ${estabelecimentosOriginais},

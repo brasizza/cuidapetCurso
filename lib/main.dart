@@ -10,6 +10,8 @@ void main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await loadEnv();
   await PushMessageConfigure().configure();
+  //Tira o keyboard caso tenha ficado preso
+  SystemChannels.textInput.invokeMethod('TextInput.hide');
   runApp(ModularApp(module: AppModule()));
 }
 

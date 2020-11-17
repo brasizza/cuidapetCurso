@@ -44,8 +44,11 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
       drawer: Drawer(),
       backgroundColor: Colors.grey[100],
       appBar: appBar,
-      body: SingleChildScrollView(
-        child: Container(
+      body:
+      RefreshIndicator(child: 
+         SingleChildScrollView(
+           physics: AlwaysScrollableScrollPhysics(),
+      child: Container(
           padding: const EdgeInsets.only(top: 12.0),
           width: ScreenUtil().screenWidth,
           height: ScreenUtil().screenHeight - (appBar.preferredSize.height + ScreenUtil().statusBarHeight),
@@ -57,7 +60,10 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
             ],
           ),
         ),
-      ),
+      )
+      
+      , onRefresh: ()=>controller.buscarEstabelecimentos())
+      ,
     );
   }
 
@@ -196,11 +202,12 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
           ),
           Expanded(
               child: PageView(
+
             onPageChanged: (int pagina) {
               controller.alterarPaginaSelecionada(pagina);
             },
             controller: _estabelecimentoPageController,
-            physics: NeverScrollableScrollPhysics(),
+             physics: NeverScrollableScrollPhysics(),
             children: [
               _buildEstabelecimentosLista(),
               _buildEstabelecimentosGrid(),
@@ -238,7 +245,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
                 if (snapshot.hasData) {
                   var fornecs = snapshot.data;
                   return ListView.separated(
-                    physics: NeverScrollableScrollPhysics(),
+                  //  physics: NeverScrollableScrollPhysics(),
                     itemCount: fornecs.length,
                     itemBuilder: (context, index) {
                       var fornec = fornecs[index];
@@ -246,6 +253,9 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
                     },
                     separatorBuilder: (_, index) => Divider(color: Colors.transparent),
                   );
+                }else{
+                                    return Container(child: Text("Erro ao buscar a categoria"));
+
                 }
 
                 break;
@@ -282,6 +292,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
                 if (snapshot.hasData) {
                   var fornecs = snapshot.data;
                   return GridView.builder(
+                    // physics: NeverScrollableScrollPhysics(),
                       itemCount: fornecs.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
@@ -295,6 +306,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
                 break;
               default:
                 return Container();
+                break;
             }
           });
     });

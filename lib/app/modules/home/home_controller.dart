@@ -4,6 +4,7 @@ import 'package:cuidapetcurso/app/models/fornecedor_model.dart';
 import 'package:cuidapetcurso/app/repository/shared_prefs_repository.dart';
 import 'package:cuidapetcurso/app/services/categoria_service.dart';
 import 'package:cuidapetcurso/app/services/fornecedor_service.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:mobx/mobx.dart';
 
@@ -18,16 +19,14 @@ abstract class _HomeControllerBase with Store {
   @observable
   EnderecoModel enderecoSelecionado;
   final CategoriaService _categoriaService;
-
   final EnderecoService _enderecoService;
-
   final FornecedorService _fornecedorService;
+  final TextEditingController filtroNomeController = TextEditingController();
 
   @observable
   int categoriaSelecionada ;
 
-  @observable
-  String nomeFiltro ;
+
 
   _HomeControllerBase(this._enderecoService, this._categoriaService, this._fornecedorService);
 
@@ -79,6 +78,8 @@ abstract class _HomeControllerBase with Store {
 
   @action
   Future<void> buscarEstabelecimentos() async {
+    categoriaSelecionada = null;
+    filtroNomeController.clear();
     estabelecimentosFuture = ObservableFuture(_fornecedorService.buscarFornecedoresProximos(enderecoSelecionado));
     estabelecimentosOriginais = await estabelecimentosFuture;
   }
@@ -94,8 +95,7 @@ abstract class _HomeControllerBase with Store {
   }
 
   @action
-  void filtrarEstabelecimentoPorNome(String nome) {
-    nomeFiltro = nome;
+  void filtrarEstabelecimentoPorNome() {
     _filtrarEstabelecimento();
   }
 
@@ -103,11 +103,11 @@ abstract class _HomeControllerBase with Store {
   void _filtrarEstabelecimento() {
     var fornecedores = estabelecimentosOriginais;
     if (categoriaSelecionada != null) {
-      fornecedores = estabelecimentosOriginais.where((element) => element.categoria.id == categoriaSelecionada).toList();
+      fornecedores = fornecedores.where((element) => element.categoria.id == categoriaSelecionada).toList();
     }
 
-    if (nomeFiltro != ""  && nomeFiltro != null) {
-      fornecedores = estabelecimentosOriginais.where((element) => element.nome.toLowerCase().contains(nomeFiltro.toLowerCase())).toList();
+    if (filtroNomeController.text.isNotEmpty) {
+      fornecedores = fornecedores.where((element) => element.nome.toLowerCase().contains(filtroNomeController.text.toLowerCase())).toList();
     }
 
     estabelecimentosFuture = ObservableFuture(Future.value(fornecedores));
